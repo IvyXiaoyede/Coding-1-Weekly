@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+  
+    <!-- The Canvas tag sets up a screen in the browser that we can draw to. -->
+    <canvas></canvas>
+
+    <script>window.onerror = function(error, url, line) {parent.postMessage(["console", "❌ -- [ERROR] -- ❌ -- ⚠️ " + error], "*")};var cl = console.log;console.log = function () {var msg = [...arguments].join();parent.postMessage(["console", msg], "*");  }  </script><script type="text/javascript">
+    
+        var mouseX ;
+        var mouseY ;
+        var TWO_PI = Math.PI * 2;
+
+        // This gets a reference to the canvas in the browser
+
+        var canvas = document.querySelector("canvas");
+
+        
+        canvas.width = 600;
+        canvas.height =600;
+        
+        var context = canvas.getContext("2d");
+
+        
+        canvas.addEventListener('mousemove', getMouse, false);
+
+       
+        function getMouse(mousePosition) {
+                mouseX = mousePosition.layerX;
+                mouseY = mousePosition.layerY;
+        }
+
+        
+        function draw() {
+            
+	   	var side= 4;
+		var spacing = TWO_PI / side;
+		var radius = 100;
+           
+		//context.clearRect(0,0, canvas.width, canvas.height);
+
+          
+      var lastX = context.canvas.width * Math.random();
+      var lastY = context.canvas.height * Math.random();
+      var hue = 0;
+		context.beginPath();//开始
+         //背景
+            context.fillStyle="Black";
+            context.rect(10,10,canvas.width-15 ,canvas.height-15);
+            context.fill();
+          //Text
+          context.fillStyle='White';
+          context.font='50px Arial';
+          context.fillText('Uncontrollable Lines',60,550);
+          // Line
+		  //context.moveTo(300, 300);
+          context.moveTo(mouseX,mouseY);
+          //context.moveTo(lastX, lastY);
+          lastX = context.canvas.width * Math.random();
+          lastY = context.canvas.height * Math.random();
+          //bezier line
+          context.bezierCurveTo(
+            context.canvas.width/3 *       Math.random(),context.canvas.height * Math.random(),context.canvas.width * Math.random(),context.canvas.height * Math.random(),lastX, lastY);
+        
+        context.lineWidth = 5 + Math.random() * 5;;
+        context.stroke();
+          //color
+          hue = hue + 300 * Math.random();
+        context.strokeStyle = 'hsl(' + hue + ', 50%, 50%)';
+        //context.strokeStyle="pink";
+        context.shadowColor = 'white';   
+          context.shadowBlur = 10;
+           context.fillStyle = 'rgba(0,0,0,0.1)';
+          context.fillRect(0, 0, context.canvas.width, context.canvas.height-2);
+          
+            
+      context.closePath();
+			requestAnimationFrame(draw);
+    
+        }
+
+        //request the first animation frame
+        requestAnimationFrame(draw);
+      
+
+
+   
+</script>
+
+</body>
+
+</html>
