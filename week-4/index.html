@@ -1,0 +1,76 @@
+<html>
+<head>
+</head>
+<style>
+/*  
+    Determine the position of the canvas so that it is always in a fixed position on the canvas and also in the browser   
+*/
+
+canvas {
+position: absolute;
+top:0;
+left:0;
+  /*create the canvas, the position in the left and top*/
+}
+
+</style>
+
+<body>
+    <canvas></canvas>
+    <script>window.onerror = function(error, url, line) {parent.postMessage(["console", "❌ -- [ERROR] -- ❌ -- ⚠️ " + error], "*")};var cl = console.log;console.log = function () {var msg = [...arguments].join();parent.postMessage(["console", msg], "*");  }  </script><script>
+/*This program mainly makes use of the Mandelbrot set - a very famous image
+-This equation is applied by this Mandelbrot set, but it doesn't do anything in our program, it's just an equation that we need to understand, we don't need to understand the whole process and where the equation comes from, the ensemble is a loop that uses the position of each pixel to perform the operation over and over again.
+But for each pixel we need to have a test function to check if the position is appropriate, and each pixel has a maximum number of tests. If the output exceeds a certain value (2) then the pixel is outside the set. If not, it is inside the set.
+There are many ways to calculate this, here we use the equation z^2=(zx^2-zy^2,2*zx*zy) to perform the test
+*/
+
+var canvas = document.querySelector("canvas");//set a Canvas
+var width = window.innerWidth;//Note: Define width equal to the width of the window
+var height = window.innerHeight;//Note: Define height equal to the height of the window
+var context = canvas.getContext("2d");//Note: The construction image canvas is 2d
+canvas.setAttribute("width", width);//Read the defined width
+canvas.setAttribute("height", height);//Read the defined height
+
+var z,zx,zy=0;//variables for the absolute value of z, and the variables we use to represent the x and y coordinates of z. Define zx and zy, using the var statement
+var cx,cy=0;//We use c to represent the position of the complex number, defining cx and cy, using the var statement
+var maxIterations=50;//We calculate the fractal by iterating the test for each pixel. The size of this number is the maximum number of tests, and we specify in the statement that the maximum fractal value is 50
+var res=2;//Specify the size of the circle
+
+      
+context.translate(width*0.5,height*0.5);//Most of the time we keep the object in the centre of the canvas, and this statement is to keep the origin in the centre
+  ///////////////The next step is to start the logic loop，
+  //We want each pixel to be within the specified range, so we use an if statement to loop through and make sure that each one is within the range
+  for (var i=-(width/2);i<width/2;i+=res) {//for every pixel in the x dimension (columns)...
+    for (var j=-(width/2);j<width/2;j+=res) {//run through all the y pixels
+      //The if conditional statement in the above two lines is required to satisfy these two conditions before the statement can loop
+      
+      cx=i/(width/4);//Simply put let cx be between -2 and 2. Adjust the value of x so that it is between -2 and 2，as this is the position of the Mandelbrot.
+      
+      cy=j/(width/4);//Similarly, the value of cy needs to be fixed between -2 and 2. These two lines give us the complex number c, which is just (cx,cy).
+      for (var test=0;test<maxIterations;test++) {//Now we start the test with a loop, the number of runs is the number of loops determined by the second conditional of the if statement, the higher the number the longer the loop will take
+        if (z<2.0) {//If the value of z is < 2 run the conditional statement and we will start by calculating z^2 - the first time we do this it will be 0. Then we add c, then we test etc.
+        //Running our equation, we calculate z^2 as follows. z^2=(zx^2-zy^2,2*zx*zy)
+        //That is => zx=(zx*zx)-(zy*zy) and zy=(2*zx*zy).
+          var x=(zx*zx)-(zy*zy);//this is zx line
+          var y=2*(zx*zy);//this is z(y) line
+          zx=x+cx;// we add cx to x to get the next value of zx
+          zy=y+cy;//add cy to y to get the next value of zy
+          z=Math.sqrt((zx*zx)+(zy*zy));//Now we get the absolute value of z squared, and the next time we run the test we see if it exceeds 2, the result of the last run to compare with the condition in the if statement. If it is, we do nothing, and if it is not in the conditional range, we do not run the statement
+          var col =255- (255/maxIterations)*test;
+          context.fillStyle='rgb(' + col + ',' + col + ',' + col + ')';//This is a statement that shows the colours. The colour depends on how many tests we have to do before the Z value is greater than 2. 
+        }//With this conditional statement, all statements will never have an absolute value greater than 2, which completes the specification of the statement and achieves our goal
+      }
+      z=0;//Before we can run the next test we need to clear the variables we are using.
+//Similarly both zx and zy need to clear the data so that the value of zx == 0 and the value of zy == 0
+      zx=0;
+      zy=0;
+      
+    context.beginPath();//The next step is to start the drawing in the next step, with the beginpath() statement.
+    context.rect(i,j,res,res); //Draw a rectangle with starting point (i, j) and length res
+    context.fill();//fill with the rectangle
+    }
+  } 
+//and that's how you calculate the Mandelbrot set!
+</script>
+</body>
+</html>
